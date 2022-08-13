@@ -9,6 +9,8 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./app:/var/app
+    env_file:
+      - .env
 
   db:
     image: postgres:12

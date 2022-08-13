@@ -6,6 +6,10 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
+database:
+	dsn: 'pgsql:host=db;dbname=%db_name%'
+	user: %db_user%
+	password: %db_password%
 
 session:
 	expiration: 14 days
