@@ -7,6 +7,8 @@ services:
         user: web
         uid: 1000
       dockerfile: ./Dockerfile
+    volumes:
+      - ./app:/var/app
 
   db:
     image: postgres:12
