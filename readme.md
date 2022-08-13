@@ -8,5 +8,6 @@
 4. В качестве демонстрации работы фильтров findAndRemove и findAndReplace предусмотреть некоторую форму, которая соответсвенно будет применять описанные во 2-ом пункте правила по работе с текстом для topics_messages.comment (оформление на свое усмотрение)
 
 ## Запуск
- - Переименуйте файл `example.dev` в `.env`
+ - Переименуйте файл `example.dev` в `.env`. Если требуется установите необходимые параметры
  - Запустите окружение командой `docker compose up -d`
+ - Выполните миграции БД командой `docker compose exec app php ./migrations/run.php structures basic-data dummy-data`
