@@ -2,6 +2,9 @@ FROM php:7.4-fpm
 
 ARG user
 ARG uid
+ARG tz
+
+ENV TZ=$tz
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -26,3 +29,7 @@ RUN mkdir -p /home/$user/.composer && \
 WORKDIR /var/app
 
 USER $user
+
+COPY ./app /var/app
+
+RUN composer install --no-plugins --no-scripts

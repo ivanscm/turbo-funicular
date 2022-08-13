@@ -6,11 +6,14 @@ services:
       args:
         user: web
         uid: 1000
+        tz: ${TZ}
       dockerfile: ./Dockerfile
     volumes:
       - ./app:/var/app
     env_file:
       - .env
+    depends_on:
+      - db
 
   db:
     image: postgres:12
