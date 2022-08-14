@@ -1,0 +1,92 @@
+{block content}
+<div class="column">
+    <div class="columns">
+        <div class="column">
+            <h1 n:block=title class="title">Список постов с тремя последними комментариями</h1>
+            <h2 class="subtitle">Демонстрируется выполнение SQL запроса</h2>
+        </div>
+        <div class="column is-one-quarter">
+            <a class="button is-pulled-right is-primary" n:href="Homepage:default">Вернуться в главное меню</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            <p>Есть две таблички: <code>topics</code> и <code>topics_messages</code>. Таблица <code>topics</code>
+                содержит записи постов <code>(id|title|text)</code>. А табличка
+                <code>topics_messages</code> содержит комментарии пользователей <code>(id|topics_id|users_id|comment|date_added)</code>.
+                Задача: написать SQL запрос на выборку последних 3х комментариев для каждого поста в списке.</p>
+        </div>
+    </div>
+
+    <hr/>
+    <h3 class="is-size-3 mb-2">Способ 1: через выражение <code>LATERAL</code>. Время выполнения запроса: {$postsByLateralMethodTime}</h3>
+    <pre><code>
+    SELECT topics.id, recent_comments.*
+        FROM topics
+        LEFT JOIN LATERAL (
+            SELECT *
+            FROM topics_messages
+            WHERE topics_messages.topics_id = topics.id
+            ORDER BY date_added DESC
+            LIMIT 3
+        ) AS recent_comments ON true;</code></pre>
+
+    <div class="columns is-multiline mt-2">
+        {foreach $postsByLateralMethod as $post}
+            <div class="column is-6">
+                {include post from '../@post.latte' $post}
+            </div>
+        {/foreach}
+    </div>
+
+    <hr/>
+    <h3 class="is-size-3 mb-2">Способ 2: подзапрос с группировкой в <code>JSON</code>. Время выполнения запроса: {$postsByJsonGroupMethodTime}</h3>
+    <pre><code>
+    SELECT topics.*, comments.comments
+            FROM topics
+         LEFT JOIN (SELECT topics_id, json_agg(row_to_json(data)) AS comments
+                    FROM (SELECT topics_messages.*, u.id as user_id, u.title as user_title
+                          FROM topics_messages
+                                   LEFT JOIN users u on topics_messages.users_id = u.id
+                          ORDER BY topics_messages.date_added DESC) as data
+                    GROUP BY 1
+                    LIMIT 3) comments ON comments.topics_id = topics.id;</code></pre>
+
+    <div class="columns is-multiline mt-2">
+        {foreach $postsByJsonGroupMethod as $post}
+            <div class="column is-6">
+                {include post from '../@post.latte' $post}
+            </div>
+        {/foreach}
+    </div>
+
+    <hr/>
+    <h3 class="is-size-3 mb-2">Способ 3: два запроса. Время выполнения запросов: {$postsByTwoQueriesMethodTime}</h3>
+    <pre><code>
+    SELECT topics.id,
+       topics.title,
+       topics.text,
+       array(select topics_messages.id
+             from topics_messages
+             where topics_messages.topics_id = topics.id
+             ORDER BY topics_messages.date_added DESC
+             LIMIT 3) as comments_ids
+    FROM topics;</code></pre>
+    <br/>
+    <pre><code>
+    SELECT topics_messages.*,
+        u.id as user_id,
+        u.title as user_title
+    FROM topics_messages
+    LEFT JOIN users u on u.id = topics_messages.users_id
+    WHERE topics_messages.id IN (1, 2, 3)</code></pre>
+
+    <div class="columns is-multiline mt-2">
+        {foreach $postsByTwoQueriesMethod as $post}
+            <div class="column is-6">
+                {include post from '../@post.latte' $post}
+            </div>
+        {/foreach}
+    </div>
+</div>

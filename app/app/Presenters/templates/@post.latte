@@ -1,0 +1,33 @@
+{define post $post, $isFull = false}
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                {$post->getTitle()}
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                {if $isFull}
+                    {$post->getText()|breakLines}
+                {else}
+                    {$post->getText()|truncate:400,'...'|breakLines}
+                {/if}
+            </div>
+            <h4 class="is-size-4 mb-2">Комментарии:</h4>
+            {foreach $post->getComments() as $comment}
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <strong>{$comment->getUser()->getTitle()}</strong>
+                                <small>{$comment->getDateAdded()|date:'%H:%m %d.%m.%Y'}</small>
+                                <br>
+                                {$comment->getComment()}
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            {/foreach}
+        </div>
+    </div>
+{/define}
