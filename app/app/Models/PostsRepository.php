@@ -171,4 +171,49 @@ FROM topics
 SQL;
         return $this->database->query($sql);
     }
+
+    /**
+     * Возвращает все комментарии
+     * @return \Nette\Database\ResultSet
+     */
+    public function findAllComments(): \Nette\Database\ResultSet
+    {
+        $sql = <<<SQL
+SELECT topics_messages.*, u.id AS user_id, u.title AS user_title
+FROM topics_messages
+         LEFT JOIN users u on u.id = topics_messages.users_id
+ORDER BY date_added DESC
+SQL;
+        return $this->database->query($sql);
+    }
+
+    /**
+     * Возвращает комментарий по его идентификатору
+     * @param int $id Идентификатор комментария
+     * @return \Nette\Database\Row|null
+     */
+    public function getCommentById(int $id): ?\Nette\Database\Row
+    {
+        $sql = <<<SQL
+SELECT topics_messages.*, u.id AS user_id, u.title AS user_title
+FROM topics_messages
+         LEFT JOIN users u on u.id = topics_messages.users_id
+WHERE topics_messages.id = ?
+SQL;
+        return $this->database->fetch($sql, $id);
+    }
+
+    /**
+     * Сохраняет текст комментария по его идентификатору
+     * @param int $id Идентификатор комментария
+     * @param string $text Текст комментария
+     * @return void
+     */
+    public function saveCommentText(int $id, string $text): void
+    {
+        $sql = <<<SQL
+UPDATE topics_messages SET comment = ? WHERE id = ?
+SQL;
+        $this->database->query($sql, $text, $id);
+    }
 }

@@ -1,0 +1,74 @@
+{block content}
+<div class="column">
+    <div class="columns">
+        <div class="column">
+            <h1 n:block=title class="title">Модерация комментариев</h1>
+            <h2 class="subtitle">Демонстрируется вывод комментариев и импользования фильтров замены(удаления)</h2>
+        </div>
+        <div class="column is-one-quarter">
+            <a class="button is-pulled-right is-primary" n:href="Homepage:default">Вернуться в главное меню</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            <p>
+                Написать на PHP сервис, который будет обеспечивать некоторый функционал по работе с текстом:
+            <ul>
+                <li><code>findAndRemove</code>: для указанного набора слов в массиве <code>['один', 'два', ...]</code>
+                    ищет вхождения по тесту и
+                    вырезает их.
+                </li>
+                <li><code>findAndReplace</code>: для указанного набора слов в массиве <code>['один' => 'foo', 'два' =>
+                        'bar', ...]</code> ищет
+                    вхождения в тесте по ключу и заменят их на значение в массиве.
+                </li>
+            </ul>
+            В качестве демонстрации работы фильтров <code>findAndRemove</code> и <code>findAndReplace</code>
+            предусмотреть некоторую форму,
+            которая соответсвенно будет применять описанные во 2-ом пункте правила по работе с текстом для
+            <code>topics_messages.comment</code> (оформление на свое усмотрение)
+            </p>
+        </div>
+    </div>
+
+    <hr/>
+    {if $comments}
+        <div class="card">
+            <table class="table is-striped is-hoverable is-fullwidth">
+                <thead>
+                <tr>
+                    <th>Текст комментария</th>
+                    <th>Автор комментария</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Текст комментария</th>
+                    <th>Автор комментария</th>
+                    <th>Действия</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                {foreach $comments as $comment}
+                    <tr>
+                        <td>{$comment->comment}</td>
+                        <td>{$comment->user_title}</td>
+                        <td>
+                            <div class="buttons has-addons are-small is-pulled-right">
+                                <a n:href="Posts:ReplaceWordsInComment $comment->id" class="button is-outlined is-primary">Заменить слова в тексте</a>
+                                <a n:href="Posts:RemoveWordsInComment $comment->id" class="button is-outlined is-danger">Удалить слова из текста</a>
+                            </div>
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+    {else}
+        <div class="notification is-info">
+            Информации по комментариям нет, но она скоро появится. Загляните сюда попозже.
+        </div>
+    {/if}
+</div>

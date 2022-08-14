@@ -1,0 +1,77 @@
+{block content}
+<div class="column">
+    <div class="columns">
+        <div class="column">
+            <h1 n:block=title class="title">Удалить слова из комментария</h1>
+            <h2 class="subtitle">Демонстрируется вывод комментария, его изменение и сохранение. А так же работа с
+                удалением слов.</h2>
+        </div>
+        <div class="column is-one-quarter">
+            <a class="button is-pulled-right is-primary" n:href="Posts:ModerateComments">Вернуться к комментариям</a>
+        </div>
+    </div>
+
+    <hr/>
+    <div class="notification is-warning">
+        <strong>Помните,</strong> что из песни слов не выбросишь. Будьте аккуратны, ваши действия могу исказить точку
+        зрения автора. Одумайтесь, и вернитесь <a n:href="Posts:ModerateComments">дальше читать комментарии</a>.
+    </div>
+    <div class="columns">
+        <div class="column">
+            {form removeWordsInComment class=>"card"}
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Модерация
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="field has-addons" n:multiplier="words">
+                        <p class="control is-expanded is-small">
+                            <input n:name="word" class="input is-small">
+                        </p>
+                        <p class="control">
+                            {btnRemove 'class' => 'button is-danger is-small ajax'}
+                        </p>
+                    </div>
+                    {btnCreate words class => "button is-success is-light is-small is-fullwidth ajax"}
+                    <div class="field">
+                        {label comment class=>"label"}
+                        <div class="control">
+                            {input comment class=>"textarea"}
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    {input removeWords class=> "card-footer-item ajax"}
+                    {input save class=> "card-footer-item"}
+                </footer>
+            {/form}
+        </div>
+        <div class="column">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Предпросмотр
+                    </p>
+                </header>
+                <div class="card-content">
+                    {snippet preview}
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <strong>{$comment->user_title}</strong>
+                                        <small>{$comment->date_added|date:'%H:%m %d.%m.%Y'}</small>
+                                        <br>
+                                        {$comment->comment}
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                    {/snippet}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
