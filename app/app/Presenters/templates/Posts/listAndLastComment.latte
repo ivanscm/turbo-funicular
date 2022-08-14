@@ -1,0 +1,55 @@
+{block content}
+<div class="column">
+    <div class="columns">
+        <div class="column">
+            <h1 n:block=title class="title">Список постов и последний комментарий к ним</h1>
+            <h2 class="subtitle">Таблица с данными о постах и последний комментарий</h2>
+        </div>
+        <div class="column is-one-quarter">
+            <a class="button is-pulled-right is-primary" n:href="Homepage:default">Вернуться в главное меню</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            <p>Вывести на экран табличку с результатом со следующими колонками: Наименование топика / Последний
+                комментарий из таблички <code>topics_messages</code> + ФИО автора комментария. (оформление на свое
+                усмотрение)</p>
+        </div>
+    </div>
+
+    <hr/>
+    {if $topics}
+    <div class="card">
+        <table class="table is-striped is-hoverable is-fullwidth">
+            <thead>
+            <tr>
+                <th>Наименование топика</th>
+                <th>Последний комментарий</th>
+                <th>Автор комментария</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th>Наименование топика</th>
+                <th>Последний комментарий</th>
+                <th>Автор комментария</th>
+            </tr>
+            </tfoot>
+            <tbody>
+            {foreach $topics as $topic}
+                <tr>
+                    <td>{$topic->title}</td>
+                    <td>{if $topic->comment}{$topic->comment}{else}-{/if}</td>
+                    <td>{if $topic->comment}{$topic->user_title}{else}-{/if}</td>
+                </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+    {else}
+    <div class="notification is-info">
+        Информации по топикам нет, но она скоро появится. Загляните сюда попозже.
+    </div>
+    {/if}
+</div>

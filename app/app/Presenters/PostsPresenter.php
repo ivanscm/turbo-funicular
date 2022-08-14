@@ -30,4 +30,9 @@ final class PostsPresenter extends Nette\Application\UI\Presenter
         $this->template->postsByTwoQueriesMethodTime = Debugger::timer('postsByTwoQueriesMethod');
 
     }
+
+    public function renderListAndLastComment()
+    {
+        $this->template->topics = $this->postsRepository->findPostAndLastComment();
+    }
 }

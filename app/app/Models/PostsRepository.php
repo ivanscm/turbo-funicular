@@ -152,4 +152,23 @@ SQL;
         }
         return $this->findPostsAndLastCommentsLateralMode($commentsCount);
     }
+
+    public function findPostAndLastComment(): \Nette\Database\ResultSet
+    {
+        $sql = <<<SQL
+SELECT topics.id, topics.title, recent_comment.*
+FROM topics
+         LEFT JOIN LATERAL (
+    SELECT topics_messages.id         as message_id,
+           topics_messages.comment    as comment,
+           u.title                    as user_title
+    FROM topics_messages
+             LEFT JOIN users u on topics_messages.users_id = u.id
+    WHERE topics_messages.topics_id = topics.id
+    ORDER BY date_added DESC
+    LIMIT 1
+    ) AS recent_comment ON true;
+SQL;
+        return $this->database->query($sql);
+    }
 }
